@@ -1,16 +1,28 @@
-# This is a sample Python script.
+import ebooklib
+from ebooklib import epub
+from PyQt5.QtWidgets import QMainWindow, QApplication
+from PytQt5.uic import loadUiType
+import sys
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+class Main(QMainWindow):
+    def __init__(self):
+        super(Main, self). __init__()
+        loadUi("demo.ui", self)
 
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('AAAA')
+    app = QApplication(sys.argv)
+    ui = Main()
+    ui.show()
+    app.exec_()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+# read the named file
+book = epub.read_epub('pg84.epub')
+
+# extract everything within the body content of the file, print to console
+for item in book.get_items():
+    if item.get_type() == ebooklib.ITEM_DOCUMENT:
+        print('==================================')
+        print('Name : ', item.get_name())
+        print('----------------------------------')
+        print(item.get_body_content())
+        print('==================================')
