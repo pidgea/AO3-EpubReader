@@ -60,7 +60,9 @@ class SecondWindow(QMainWindow):
         loadUi("otherui.ui", self) 
 
         self.actionOpen_HTML.triggered.connect(self.openHTML)
-        #self.actionDark_Mode_3.triggered.connect(self.darkMode)
+        self.actionDark_Mode_3.triggered.connect(self.setDarkMode)
+        self.actionLight_Mode_2.triggered.connect(self.setLightMode)
+        
 
         # this is all setting up the web viewer used to display the html 
         self.web_engine_view = QWebEngineView(self)
@@ -75,6 +77,20 @@ class SecondWindow(QMainWindow):
         fname = QFileDialog.getOpenFileName(self, 'Open file', '', 'HTML files (*.html)') # same file dialog, specifies HTML!
         self.setWindowTitle(fname[0])
         self.web_engine_view.setUrl(QUrl.fromLocalFile(fname[0])) # web engine needs a URL, get one from selected local file
+
+    def setDarkMode(self):
+        self.setStyleSheet('''QWidget{
+            background-color: rgb(33,33,33);
+            color: rgb(255, 255, 255);
+            }
+            QMenuBar::item:selected{
+            color: rgb(0, 0, 0)
+            }
+            ''')
+        
+
+    def setLightMode(self):
+        self.setStyleSheet("")
 
 # stuff to make the .ui load and work
 if __name__ == '__main__':
