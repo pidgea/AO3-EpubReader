@@ -1,41 +1,57 @@
-import sys
+from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog
+from bs4 import BeautifulSoup
+from PyQt5.uic import loadUi
 import ebooklib
 from ebooklib import epub
-from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog
-from PyQt5.uic import loadUi
-#imports
+import sys 
 
-class Main(QMainWindow): #loading the gui shenanigans, so make a new class for it
+class Main(QMainWindow):
     def __init__(self):
-        super(Main, self). __init__()
-        loadUi("demo.ui", self) #load the specified .ui file 
+        super(Main, self).__init__()
+        loadUi("tut.ui", self)
 
-        #when the 'x' button is pressed, call function connected to it
-        self.actionOpen.triggered.connect(self.openFile) 
+        self.actionOpen.triggered.connect(self.openFile)
 
 
-    def openFile(self): # new function!!!!!!!
-        fname = QFileDialog.getOpenFileName(self, 'Open File', '', 'Text files (*.txt)') # fname variable = the file opened within the dialog(directory title, which directory, specified file type)
-        self.setWindowTitle(fname[0]) # set the window title to selected fname
-        with open(fname[0], 'r') as f: # return
-            filetext = f.read()
-            self.textEdit.setText(filetext)
-        self.current_path = fname[0]
-    from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog
 
-if __name__ == '__main__': 
+    def openFile(self): # selecting the epub file
+        print("BUTTON CLICKED!") # that button was CLICKED!!!
+
+        fname = QFileDialog.getOpenFileName(self, 'Open file', '', 'EPUB files (*.epub)') # opens file dialog, shoves epub into a variable (brackets are file dialogue parameters)
+        self.setWindowTitle(fname[0]) # window title 2 whatever file name is :)
+
+        book = epub.read_epub(fname[0]) 
+
+        with open(fname[0], 'r') as f:
+            contents = f.read()
+
+            soup = BeautifulSoup(contents, "html.parser")
+            for child in soup.descendants:
+                    if child.name:
+                         print(child.name)
+
+        for items in book.get_items():
+            if items.get_type() == ebooklib.ITEM_DOCUMENT:
+                bodyContent = items.get_body_content()
+
+
+                # self.textEdit.setText(items)
+              # print (items.get_body_content())
+              #  print ('it worked loser')
+
+
+
+""""
+soupers idea
+   def chapter_to_str(chapter):
+    soup = BeautifulSoup(chapter.get_body_content(), 'html.parser')
+    text = [para.get_text() for para in soup.find_all('p')]
+    return ''.join(text)
+"""
+
+
+if __name__ == '__main__':
     app = QApplication(sys.argv)
     ui = Main()
     ui.show()
     app.exec_()
-
-
-book = epub.read_epub('pg84.epub') #assign epub file to book variable
-
-for item in book.get_items(): # 
-    if item.get_type() == ebooklib.ITEM_DOCUMENT:
-        print('==================================') # these act line breaks in the console
-        print('Name : ', item.get_name())
-        print('----------------------------------')
-        print(item.get_body_content())
-        print('==================================')
