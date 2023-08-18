@@ -22,8 +22,6 @@ class Main(QMainWindow):
     def openHTMLWindow(self):
         self.window_2.show() 
         # this is basically a portal to access the next window
-        # couldn't figure how to transfer fname[0] across windows
-        # as in, to be able to open the HTMLViewer from the file dialog in the main window
         
     def convertFile(self):
 
@@ -36,18 +34,18 @@ class Main(QMainWindow):
 
             book = epub.read_epub(fname[0]) # selected file data GET! shove into book variable
 
-            for item in book.get_items():
-                if item.get_type() == ebooklib.ITEM_DOCUMENT:
-                    content = item.get_body_content() # book text is now in the content variable
+            for item in book.get_items(): # loop because there's multiple items to collect from the epub
+                if item.get_type() == ebooklib.ITEM_DOCUMENT: # check type
+                    content = item.get_body_content() # extract content of the item into the content variable
                     
                     soup = BeautifulSoup(content, 'html.parser') # soup variable contains... the Soup (content is parsed with integrated html parser)
 
                     content_html = str(soup) # soup is now a string in html_content
 
-                    output_filename = os.path.join(output_dir, f"{item.get_id()}.html") # outputting files with id names
+                    output_filename = os.path.join(output_dir, f"{item.get_id()}.html") # outputting files with unique id names
 
-                    with open(output_filename, 'w', encoding='utf-8') as html_file: # conversion stuff, puts the content into the files
-                        html_file.write(content_html)
+                    with open(output_filename, 'w', encoding='utf-8') as html_file: # opens the files in write mode with utf-8 encoding
+                        html_file.write(content_html) # content is written into the files
                         self.textBrowser.setText("Congrats, you converted it to HTML! Go ahead and open it by clicking 'Open Window' under 'Open HTML Window'.")
             print("DONE") # (testing on the same epub file writes over the same html files)
         except:
