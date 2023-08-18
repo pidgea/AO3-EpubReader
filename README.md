@@ -1,3 +1,2 @@
-2023 TECH PROJECT
-
-To run the application, open the project folder in VSCode etc and run main.py!
+2023 TECH PROJECT - Lovingly called WOMSE-R
+EPUB to HTML converter + HTML Viewer
